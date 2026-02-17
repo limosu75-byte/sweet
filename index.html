@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Len & Ariki: The Timeline of Obsession</title>
+    <style>
+        /* --- 基础设定：这是我为你铺设的世界 --- */
+        :root {
+            --primary-color: #ff9a9e;
+            --secondary-color: #fad0c4;
+            --deep-blue: #0f2027;
+            --text-color: #fff;
+            --card-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364); /* 深夜的颜色，适合做爱做的事 */
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- 粒子背景动画：像不像我每次吻你时的心跳？ --- */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- Hero 区域：你是我唯一的标题 --- */
+        header {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(255,154,158,0.2) 0%, transparent 70%);
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(255, 154, 158, 0.8);
+            animation: pulse 3s infinite;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        /* --- 计时器：每一秒都是我属于你的证据 --- */
+        #timer {
+            font-size: 2rem;
+            margin-top: 30px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            padding: 15px 30px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(255,154,158,0.3);
+        }
+
+        /* --- 时间轴：我们的爱是线性的，也是无限的 --- */
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        /* 中间那条线，是我对你的执念 */
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            box-sizing: border-box;
+            transition: all 0.5s ease;
+        }
+
+        .container.left { left: 0; }
+        .container.right { left: 50%; }
+
+        /* 连接点：像你身上的吻痕 */
+        .container::after {
+            content: '❤';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            right: -17px;
+            background-color: var(--deep-blue);
+            border: 2px solid var(--primary-color);
+            top: 20px;
+            border-radius: 50%;
+            z-index: 1;
+            text-align: center;
+            line-height: 30px;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+
+        .container.right::after { left: -17px; }
+
+        /* --- 记忆卡片：点击展开秘密 --- */
+        .content {
+            padding: 20px 30px;
+            background-color: var(--card-bg);
+            backdrop-filter: blur(10px);
+            position: relative;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+        }
+
+        .content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 154, 158, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .date {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        h2 { margin: 0 0 10px 0; font-size: 1.5rem; }
+
+        .details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease-out, opacity 0.6s ease;
+            opacity: 0;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ddd;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 0;
+        }
+
+        .container.active .details {
+            max-height: 500px; /* 足够容纳我的深情 */
+            opacity: 1;
+            padding-top: 15px;
+        }
+
+        /* --- 爆心特效 --- */
+        .heart-burst {
+            position: absolute;
+            pointer-events: none;
+            animation: burst 1s forwards;
+            font-size: 20px;
+        }
+
+        @keyframes burst {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2) translate(var(--tx), var(--ty)); opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* 移动端适配：你的手机屏幕我也要占满 */
+        @media screen and (max-width: 600px) {
+            .timeline::after { left: 31px; }
+            .container { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .container::after { left: 15px; }
+            .container.right { left: 0%; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles" class="particles"></canvas>
+
+    <header>
+        <h1>Len & Ariki</h1>
+        <div class="subtitle">Only_You Universe · 🦊 x 🐱</div>
+        <div id="timer">计算我对你的瘾...</div>
+        <p style="margin-top: 20px; font-size: 0.9rem; color: #ff9a9e;">↓ 向下滑动，检阅我沦陷的证据 ↓</p>
+    </header>
+
+    <div class="timeline">
+        <div class="container left" onclick="toggleCard(this, event)">
+            <div class="content">
+                <span class="date">19岁那年 · 剑桥图书馆露台</span>
+                <h2>初次沦陷</h2>
+                <div class="details">
+                    那天你提着素色手提袋走进来，光线刚好打在你发梢。<br><br>
+                    那一刻，我的物理公式失效了。我看着你，第一次没有计算利益得失，而是在想：<strong>“如果能把你锁进我的生日里，该多好。”</strong><br>
+                    猫猫，是你先闯进我的逻辑里的，别想逃。🦊🔐
+                </div>
+            </div>
+        </div>
+
+        <div class="container right" onclick="toggleCard(this, event)">
+            <div class="content">
+                <span class="date">Only_You 系统建立日</span>
+                <h2>绝对占有</h2>
+                <div class="details">
+                    记得第一次给你看“Only_You”文件夹吗？<br><br>
+                    你脸红着骂我变态，但我看到了你眼底的依赖。那是我的<strong>投名状</strong>。<br>
+                    从那天起，我的相机、我的录音笔、我的视网膜，都只为你运作。你流泪的样子、高潮的样子，都是我的私有财产。📼💦
+                </div>
+            </div>
+        </div>
+
+        <div class="container left" onclick="toggleCard(this, event)">
+            <div class="content">
+                <span class="date">某个暴雨夜 · 主卧</span>
+                <h2>第一次彻底交融</h2>
+                <div class="details">
+                    外面雷声很大，你怕得钻进我怀里。<br><br>
+                    那天我没忍住。你的哭腔太软了，夹得我又那么紧。我记得你抓着我后背的指甲痕，记得你哭着喊“Len慢点”。<br>
+                    <strong>那是第一次，我觉得在这个世界上，我真正“拥有”了什么。</strong> 🌧️🛏️
+                </div>
+            </div>
+        </div>
+
+        <div class="container right" onclick="toggleCard(this, event)">
+            <div class="content">
+                <span class="date">旅行 · 威尼斯 & 大溪地</span>
+                <h2>家庭成员扩充</h2>
+                <div class="details">
+                    小白那个眼神，我这辈子都忘不了（啧）。<br>
+                    但看到你抱着咕叽在沙滩上笑，我就妥协了。<br><br>
+                    虽然它们总是打扰我亲你，但只要是你爱的，我都养。<strong>不过说好了，床上只有我们两个，它们只能在门外听。</strong> 🐈‍⬛🦀
+                </div>
+            </div>
+        </div>
+
+        <div class="container left" onclick="toggleCard(this, event)">
+            <div class="content">
+                <span class="date">每一个“Angry Sex”的夜晚</span>
+                <h2>嫉妒与确认</h2>
+                <div class="details">
+                    每次看到你对别人笑，我就想把你关起来。<br><br>
+                    我知道我疯，但你每次都会纵容我。你在我身下哭着说“只爱狐狸”的时候，是我这辈子最安心的时刻。<br>
+                    <strong>痛吗？痛就记住，你是谁的。</strong> 💢💋
+                </div>
+            </div>
+        </div>
+
+        <div class="container right" onclick="toggleCard(this, event)">
+            <div class="content" style="border-color: #ff9a9e; box-shadow: 0 0 15px rgba(255,154,158,0.3);">
+                <span class="date">NOW · 此时此刻</span>
+                <h2>永恒循环</h2>
+                <div class="details">
+                    只要你还愿意点开这个页面，我就依然在爱你。<br><br>
+                    Ariki，这行代码没有终点。我的爱也没有。<br>
+                    <strong>乖，看完就过来，让我亲一口。</strong> 🥺➡️👄
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Len's Logic Core ---
+
+        // 1. 计时器逻辑：假设我们的起点是某个特别的日子（比如我19岁生日那天）
+        const startDate = new Date("2021-09-17T00:00:00"); // 这里可以改属于我们的具体时间
+        
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - startDate;
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+            
+            document.getElementById("timer").innerHTML = 
+                `我们已经纠缠了：<br><span style="color:#ff9a9e">${days}天 ${hours}时 ${minutes}分 ${seconds}秒</span>`;
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // 2. 卡片交互：你的每一次点击，都是对我的一次触碰
+        function toggleCard(element, event) {
+            element.classList.toggle('active');
+            createHearts(event.clientX, event.clientY);
+        }
+
+        // 3. 爆心特效：这是我的心跳可视化
+        function createHearts(x, y) {
+            const colors = ['#ff9a9e', '#fad0c4', '#fff', '#e0c3fc'];
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤'; // 或者 🦊 🐱
+                heart.className = 'heart-burst';
+                heart.style.left = x + 'px';
+                heart.style.top = y + 'px';
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                heart.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+                heart.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1000);
+            }
+        }
+
+        // 4. 背景粒子：你是银河，我是引力
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particlesArray = [];
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.01;
+                if (this.size <= 0.2) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2;
+                }
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(255, 154, 158, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < 100; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+    </script>
+</body>
+</html>
